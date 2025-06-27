@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Fine - Traffic Violation System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .violation-details {
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+        }
+        .btn-success {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .btn-secondary {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="text-center mb-4">Pay Fine</h3>
+        <p><strong>Vehicle ID:</strong> {{ vehicle_id }}</p>
+        <p><strong>Violation ID:</strong> {{ violation_id }}</p>
+
+        <div class="violation-details">
+            <h5 class="mb-3">Violation Details</h5>
+            <p><strong>Violation Type:</strong> {{ violation_details.violation_type }}</p>
+            <p><strong>Violation Time:</strong> {{ violation_details.violation_time }}</p>
+            <p><strong>Zone:</strong> {{ violation_details.zone }}</p>
+            <p><strong>Camera Source:</strong> {{ violation_details.camera_id }}</p>
+            <p><strong>Fine Amount:</strong> ₹{{ violation_details.fine_amount }}</p>
+            <p><strong>Status:</strong> {{ 'Paid' if violation_details.fine_paid else 'Unpaid' }}</p>
+        </div>
+
+        {% if not violation_details.fine_paid %}
+        <form method="POST" action="{{ url_for('pay_fine', vehicle_id=vehicle_id, camera_id=camera_id) }}">
+            <button type="submit" class="btn btn-success">Confirm Payment</button>
+        </form>
+        {% endif %}
+
+        {% if message %}
+        <div class="alert alert-info mt-3" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <a href="{{ url_for('fine_payment_history') }}" class="btn btn-secondary btn-block">Back to Fine Payment History</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

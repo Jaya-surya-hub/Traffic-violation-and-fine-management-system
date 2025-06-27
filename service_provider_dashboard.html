@@ -1,0 +1,65 @@
+{% extends "service_layout.html" %}
+
+{% block title %}Service Provider Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard Card */
+    .dashboard-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #b3e5fc, #d1c4e9);
+        animation: zoomIn 0.8s ease-out;
+        max-width: 800px;
+        margin: 0 auto;
+        border: 2px solid var(--primary-purple);
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-purple);
+        text-align: center;
+        margin-bottom: 20px;
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .dashboard-card p {
+        font-size: 1.2rem;
+        text-align: center;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .dashboard-card .list-group-item {
+        font-size: 1.1rem;
+        padding: 15px;
+        border-radius: 8px;
+        background: linear-gradient(45deg, var(--primary-green), var(--primary-blue));
+        color: white;
+        border: none;
+        margin-bottom: 10px;
+        transition: transform 0.3s;
+        animation: pulse 2s infinite;
+    }
+
+    .dashboard-card .list-group-item:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-card">
+        <h2>Service Provider Dashboard 🔧</h2>
+        <p>Welcome to the Traffic Violation System. Manage vehicle service records here.</p>
+        <div class="list-group">
+            <a href="{{ url_for('service_provider_update') }}" class="list-group-item list-group-item-action">
+                <i class="fas fa-wrench me-2"></i> Update Vehicle Service Details
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

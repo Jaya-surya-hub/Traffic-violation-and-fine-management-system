@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block title %}Driver Registration{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Register Card */
+    .register-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #ffccbc, #f8bbd0);
+        animation: zoomIn 0.8s ease-out;
+        max-width: 500px;
+        margin: 0 auto;
+        border: 2px solid var(--primary-purple);
+    }
+
+    .register-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-purple);
+        text-align: center;
+        margin-bottom: 20px;
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .register-card .form-label {
+        font-weight: 600;
+        color: var(--primary-blue);
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .register-card .form-control {
+        border-radius: 8px;
+        border: 2px solid var(--primary-purple);
+        transition: border-color 0.3s, box-shadow 0.3s;
+        animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .register-card .form-control:focus {
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 5px rgba(253, 126, 20, 0.5);
+    }
+
+    .register-card .btn-register {
+        font-size: 1.1rem;
+        padding: 12px;
+        border-radius: 25px;
+        background: linear-gradient(45deg, var(--primary-orange), var(--primary-green));
+        color: white;
+        border: none;
+        width: 100%;
+        transition: transform 0.3s;
+        animation: pulse 2s infinite;
+    }
+
+    .register-card .btn-register:hover {
+        transform: scale(1.05);
+    }
+
+    /* Error Message */
+    .alert-error {
+        background: linear-gradient(45deg, #ff6b6b, #ff8787);
+        color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        animation: bounceIn 1s ease-out;
+        box-shadow: var(--shadow);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if message %}
+    <div class="alert alert-error alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="register-card">
+        <h2>Driver Registration 🚗</h2>
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="mb-3">
+                <label for="user_id" class="form-label">User ID</label>
+                <input type="text" class="form-control" id="user_id" name="user_id" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="vehicle_id" class="form-label">Vehicle ID</label>
+                <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" required>
+            </div>
+            <button type="submit" class="btn-register">Register</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

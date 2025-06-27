@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %}Service History{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Service History Section */
+    .service-history-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #ffccbc, #f8bbd0);
+        animation: slideInUp 1s ease-out;
+    }
+
+    .service-history-section h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-purple);
+        margin-bottom: 15px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .service-history-section .table {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .service-history-section .table th {
+        background: var(--primary-purple);
+        color: white;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="service-history-section">
+        <h5><i class="fas fa-tools me-2"></i> Service History</h5>
+        {% if service_history and service_history|length > 0 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Service ID</th>
+                    <th>Vehicle ID</th>
+                    <th>Service Date</th>
+                    <th>Description</th>
+                    <th>Provider</th>
+                    <th>Cost (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in service_history %}
+                <tr>
+                    <td>{{ s[0] }}</td>
+                    <td>{{ s[1] }}</td>
+                    <td>{{ s[2] }}</td>
+                    <td>{{ s[3] }}</td>
+                    <td>{{ s[4] }}</td>
+                    <td>{{ s[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No service history available for this vehicle.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,376 @@
+{% extends "layout.html" %}
+
+{% block title %}Driver Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Alert for Unpaid Fines */
+    .alert-unpaid {
+        background: linear-gradient(45deg, #ff6b6b, #ff8787);
+        color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        animation: bounceIn 1s ease-out;
+        box-shadow: var(--shadow);
+    }
+
+    .alert-unpaid strong {
+        color: #ffebeb;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #f0f4c3, #c3fdff);
+        animation: fadeIn 1s ease-in-out;
+        border: 2px solid var(--primary-blue);
+    }
+
+    .welcome-section h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: 15px;
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .welcome-section .streak-message {
+        font-size: 1.2rem;
+        animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .welcome-section .badge {
+        font-size: 1rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+        animation: pulse 2s infinite;
+    }
+
+    /* Profile and Quick Links Row */
+    .profile-card, .quick-links-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        background: var(--card-gradient);
+        color: white;
+        animation: zoomIn 0.8s ease-out;
+        margin-bottom: 20px;
+    }
+
+    .profile-card h5, .quick-links-card h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        border-bottom: 2px solid white;
+        padding-bottom: 5px;
+        animation: slideInRight 0.8s ease-out;
+    }
+
+    .profile-card p {
+        margin: 5px 0;
+        font-size: 1.1rem;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .quick-links-card .btn {
+        font-size: 1rem;
+        padding: 12px 25px;
+        margin: 8px;
+        border-radius: 25px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: linear-gradient(45deg, var(--primary-orange), var(--primary-green));
+        color: white;
+        border: none;
+        animation: pulse 2s infinite;
+    }
+
+    .quick-links-card .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Unpaid Violations Section */
+    .unpaid-violations-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #ffccbc, #f8bbd0);
+        animation: slideInUp 1s ease-out;
+        margin-bottom: 20px;
+    }
+
+    .unpaid-violations-section h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-purple);
+        margin-bottom: 15px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .unpaid-violations-section .table {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .unpaid-violations-section .table th {
+        background: var(--primary-purple);
+        color: white;
+        font-weight: 600;
+    }
+
+    .unpaid-violations-section .btn-pay-now {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+        background: linear-gradient(45deg, var(--primary-green), var(--primary-blue));
+        color: white;
+        border: none;
+        transition: transform 0.3s;
+        animation: pulse 2s infinite;
+    }
+
+    .unpaid-violations-section .btn-pay-now:hover {
+        transform: scale(1.05);
+    }
+
+    /* Recent Violations Section */
+    .violations-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #b3e5fc, #d1c4e9);
+        animation: slideInDown 1s ease-out;
+    }
+
+    .violations-section h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: 15px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .violations-section .table {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .violations-section .table th {
+        background: var(--primary-blue);
+        color: white;
+        font-weight: 600;
+    }
+
+    .violations-section .btn-refresh {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+        background: linear-gradient(45deg, var(--primary-orange), var(--primary-purple));
+        color: white;
+        border: none;
+        animation: pulse 2s infinite;
+    }
+
+    .violations-section .btn-refresh:hover {
+        transform: scale(1.05);
+    }
+
+    /* Processing Payment Overlay */
+    .payment-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid var(--primary-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+
+    .payment-overlay p {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Payment Processing Overlay -->
+<div class="payment-overlay" id="paymentOverlay">
+    <div class="spinner"></div>
+    <p>Processing Payment...</p>
+</div>
+
+<div class="container">
+    <!-- Alert for Unpaid Fines -->
+    {% if unpaid_violations and unpaid_violations|length > 0 %}
+    <div class="alert alert-unpaid alert-dismissible fade show" role="alert">
+        <strong>Action Required:</strong> You have {{ unpaid_violations|length }} unpaid violation(s). Pay now to avoid penalties!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <h2>Welcome, {{ session['user_id'] }}! 🚗</h2>
+        <p class="streak-message">
+            <strong>Safe Driving Streak: {{ streak }} Days</strong><br>
+            {% if streak >= 7 %}
+                <span class="badge bg-success">Great Work! A Week Without Violations! 🎉</span>
+            {% else %}
+                <span class="badge bg-info">Drive Safely to Build Your Streak! 🚦</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Profile and Quick Links Row -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="profile-card">
+                <h5><i class="fas fa-user-circle me-2"></i> Driver Profile</h5>
+                <p><strong>User ID:</strong> {{ session['user_id'] }}</p>
+                <p><strong>Vehicle ID:</strong> {{ vehicle_id }}</p>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="quick-links-card">
+                <h5><i class="fas fa-bolt me-2"></i> Quick Actions</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('fine_payment_history') }}" class="btn">
+                        <i class="fas fa-money-bill-wave me-2"></i>View Fines
+                    </a>
+                    <a href="{{ url_for('service_history') }}" class="btn">
+                        <i class="fas fa-tools me-2"></i>Service History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unpaid Violations Section -->
+    <div class="unpaid-violations-section">
+        <h5><i class="fas fa-exclamation-triangle me-2"></i> Unpaid Violations</h5>
+        {% if unpaid_violations and unpaid_violations|length > 0 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Violation ID</th>
+                    <th>Type</th>
+                    <th>Time</th>
+                    <th>Zone</th>
+                    <th>Fine Amount (₹)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in unpaid_violations %}
+                <tr>
+                    <td>{{ v[0] }}</td>
+                    <td>{{ v[1] }}</td>
+                    <td>{{ v[2] }}</td>
+                    <td>{{ v[3] }}</td>
+                    <td>{{ v[4] }}</td>
+                    <td>
+                        <form class="pay-fine-form" method="POST" action="{{ url_for('pay_fine', vehicle_id=vehicle_id, violation_id=v[0], camera_id=v[5]) }}">
+                            <button type="submit" class="btn-pay-now">Pay Now</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No unpaid violations found. Keep driving safely! 😊</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Violations Section -->
+    <div class="violations-section">
+        <h5><i class="fas fa-history me-2"></i> Recent Violations</h5>
+        <div id="violations-container">
+            <p>Loading violations...</p>
+        </div>
+        <button id="refresh-violations" class="btn-refresh mt-2">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load recent violations on page load
+    fetchViolations();
+
+    // Refresh violations on button click
+    document.getElementById('refresh-violations').addEventListener('click', fetchViolations);
+
+    // Handle Pay Fine form submission with processing animation
+    document.querySelectorAll('.pay-fine-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const overlay = document.getElementById('paymentOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                form.submit();
+            }, 2000); // Simulate 2-second processing delay
+        });
+    });
+});
+
+function fetchViolations() {
+    fetch('/get_violations/{{ vehicle_id }}')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('violations-container');
+            if (data.violations.length === 0) {
+                container.innerHTML = '<p>No recent violations found. Keep it up! 😊</p>';
+                return;
+            }
+            let html = '<table class="table table-bordered"><thead><tr>' +
+                '<th>Violation ID</th><th>Type</th><th>Time</th><th>Zone</th></tr></thead><tbody>';
+            data.violations.forEach(v => {
+                html += `<tr><td>${v.violation_id}</td><td>${v.violation_type}</td>` +
+                    `<td>${new Date(v.violation_time).toLocaleString()}</td><td>${v.zone}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error fetching violations:', error);
+            document.getElementById('violations-container').innerHTML = '<p>Error loading violations.</p>';
+        });
+}
+</script>
+{% endblock %}

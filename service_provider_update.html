@@ -1,0 +1,133 @@
+{% extends "service_layout.html" %}
+
+{% block title %}Update Vehicle Service Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Update Service Card */
+    .update-service-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        background: linear-gradient(45deg, #f0f4c3, #c3fdff);
+        animation: zoomIn 0.8s ease-out;
+        max-width: 600px;
+        margin: 0 auto;
+        border: 2px solid var(--primary-blue);
+    }
+
+    .update-service-card h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        text-align: center;
+        margin-bottom: 20px;
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .update-service-card .form-label {
+        font-weight: 600;
+        color: var(--primary-purple);
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .update-service-card .form-control {
+        border-radius: 8px;
+        border: 2px solid var(--primary-blue);
+        transition: border-color 0.3s, box-shadow 0.3s;
+        animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .update-service-card .form-control:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    }
+
+    .update-service-card .btn-update {
+        font-size: 1.1rem;
+        padding: 12px;
+        border-radius: 25px;
+        background: linear-gradient(45deg, var(--primary-green), var(--primary-blue));
+        color: white;
+        border: none;
+        width: 100%;
+        transition: transform 0.3s;
+        animation: pulse 2s infinite;
+    }
+
+    .update-service-card .btn-update:hover {
+        transform: scale(1.05);
+    }
+
+    .update-service-card .btn-back {
+        font-size: 1rem;
+        padding: 10px;
+        border-radius: 25px;
+        background: linear-gradient(45deg, var(--primary-orange), var(--primary-purple));
+        color: white;
+        border: none;
+        width: 100%;
+        transition: transform 0.3s;
+        animation: pulse 2s infinite;
+    }
+
+    .update-service-card .btn-back:hover {
+        transform: scale(1.05);
+    }
+
+    /* Success/Error Message */
+    .alert-message {
+        background: linear-gradient(45deg, #28a745, #66bb6a);
+        color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        animation: bounceIn 1s ease-out;
+        box-shadow: var(--shadow);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if message %}
+    <div class="alert alert-message alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="update-service-card">
+        <h3>Update Vehicle Service Details 🔩</h3>
+        <form action="/service_provider_update" method="POST">
+            <div class="mb-3">
+                <label for="vehicle_id" class="form-label">Vehicle ID</label>
+                <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="e.g., TN01AB103" required>
+            </div>
+            <div class="mb-3">
+                <label for="service_id" class="form-label">Service ID</label>
+                <input type="text" class="form-control" id="service_id" name="service_id" placeholder="e.g., S001" required>
+            </div>
+            <div class="mb-3">
+                <label for="service_date" class="form-label">Service Date</label>
+                <input type="date" class="form-control" id="service_date" name="service_date" required>
+            </div>
+            <div class="mb-3">
+                <label for="service_description" class="form-label">Service Description</label>
+                <input type="text" class="form-control" id="service_description" name="service_description" placeholder="e.g., Oil Change" required>
+            </div>
+            <div class="mb-3">
+                <label for="service_provider" class="form-label">Service Provider Name</label>
+                <input type="text" class="form-control" id="service_provider" name="service_provider" placeholder="e.g., QuickFix Garage" required>
+            </div>
+            <div class="mb-3">
+                <label for="service_cost" class="form-label">Service Cost (₹)</label>
+                <input type="number" step="0.01" class="form-control" id="service_cost" name="service_cost" placeholder="e.g., 1500.00" required>
+            </div>
+            <button type="submit" class="btn-update">Update Service Record</button>
+        </form>
+        <a href="{{ url_for('service_provider_dashboard') }}" class="btn-back mt-3">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
